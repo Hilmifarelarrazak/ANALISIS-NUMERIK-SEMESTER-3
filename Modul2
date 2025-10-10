@@ -1,0 +1,175 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from time import perf_counter as pc
+
+# Mendefinisikan fungsi
+# Fungsi yang akan dicari akarnya
+def f(x):
+    return x**3 + x**2 - 3*x - 3
+
+# Metode Bisection
+def bisection(a, b, tol=1e-6, max_iter=100):
+    fa, fb = f(a), f(b)
+    if fa * fb > 0:
+        raise ValueError("f(a) dan f(b) harus berlawanan tanda. Pilih interval lain.")
+
+    history = []
+    start = pc()
+
+    for i in range(1, max_iter + 1):
+        c = (a + b) / 2.0
+        fc = f(c)
+        history.append((i, a, b, c, fc))
+        print(f"Iter {i:2d}: a={a:.8f}, b={b:.8f}, c={c:.8f}, f(c)={fc:.8e}")
+
+        # Kondisi berhenti
+        if abs(fc) < tol or (b - a) / 2.0 < tol:
+            end = pc()
+            print(f"\nAkar diperkirakan di x = {c:.12f}")
+            print(f"f(c) = {fc:.12e}")
+            print(f"Jumlah Iterasi = {i}")
+            print(f"Waktu eksekusi = {(end - start):.6f} detik")
+            return c, history
+
+        # Tentukan interval baru
+        if fa * fc < 0:
+            b = c
+            fb = fc
+        else:
+            a = c
+            fa = fc
+
+    end = pc()
+    print("\nMetode tidak konvergen dalam batas iterasi.")
+    return c, history
+
+print("Menyelesaikan Persamaan Non Linear x^3+x^2-3x-3 dengan Metode Bisection")
+
+# Menjalankan metode pada interval [1, 2]
+akar, hist = bisection(1, 2, tol=1e-6, max_iter=100)
+
+# Membuat Grafik Bisection
+plt.figure(figsize=(8,5))
+plt.plot(range(1, len(hist)+1), hist, 'o-b')
+plt.title("Konvergensi Metode Bisection")
+plt.xlabel("Iterasi")
+plt.ylabel("Nilai x (perkiraan akar)")
+plt.grid(True)
+plt.show()
+
+#Menyelesaikan Persamaan Non Linear x^3+x^2-3x-3 dengan Metode Newton-Raphson
+# Mendefinisikan fungsi dan turunannya
+def f(x):
+ return x**3 + x**2 - 3*x - 3
+def f_prime(x):
+ return 3*x**2 + 2*x - 3
+
+# Metode Newton-Raphson
+# Fungsi dan turunannya
+def f(x):
+    return x**3 + x**2 - 3*x - 3
+
+def f_prime(x):
+    return 3*x**2 + 2*x - 3
+
+# Metode Newton-Raphson
+def newton_raphson(x0, tol=1e-6, max_iter=100):
+    print("Iterasi\t\tx\t\tf(x)")
+    nilai_x = []
+    start = pc()
+
+    for i in range(max_iter):
+        fx = f(x0)
+        fpx = f_prime(x0)
+
+        if fpx == 0:
+            print("Turunan nol, metode berhenti.")
+            break
+
+        x1 = x0 - fx / fpx
+        print(f"{i+1}\t\t{x0:.6f}\t{fx:.6f}")
+        nilai_x.append(x1)
+
+        if abs(x1 - x0) < tol:
+            end = pc()
+            print(f"\nAkar ditemukan pada x = {x1:.12f}")
+            print(f"Jumlah iterasi = {i+1}")
+            print(f"Waktu eksekusi = {(end - start):.6f} detik")
+            return x1, nilai_x
+
+        x0 = x1
+
+    print("\nMetode tidak konvergen dalam batas iterasi.")
+    return None, nilai_x
+
+print("\nMenyelesaikan Persamaan Non Linear x^3+x^2-3x-3 dengan Metode Newton-Raphson")
+
+# Menjalankan metode dengan tebakan awal
+akar, nilai_x = newton_raphson(3)
+
+# Membuat Grafik Newton-Raphson
+plt.figure(figsize=(8,5))
+plt.plot(range(1, len(nilai_x)+1), nilai_x, 's-g')
+plt.title("Konvergensi Metode Newton-Raphson")
+plt.xlabel("Iterasi")
+plt.ylabel("Nilai x (perkiraan akar)")
+plt.grid(True)
+plt.show()
+
+# Visualisasi hasil --> PR
+#Menyelesaikan Persamaan Non Linear x^3+x^2-3x-3 dengan Metode Secant
+# Mendefinisikan fungsi
+def f(x):
+   return x**3 + x**2 - 3*x - 3
+# Fungsi yang akan dicari akarnya
+def f(x):
+    return x**3 + x**2 - 3*x - 3
+
+# Metode Secant
+def secant(x0, x1, tol=1e-6, max_iter=100):
+    print("Iterasi\t\tx0\t\t\tx1\t\t\tx2\t\t\tf(x2)")
+    nilai_x = []
+    start = pc()
+
+    for i in range(max_iter):
+        f0 = f(x0)
+        f1 = f(x1)
+
+        if f1 - f0 == 0:
+            print("Error: pembagian dengan nol. Metode berhenti.")
+            return None, nilai_x
+
+        # Rumus metode Secant
+        x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
+        f2 = f(x2)
+
+        print(f"{i+1}\t\t{x0:.6f}\t{x1:.6f}\t{x2:.6f}\t{f2:.6f}")
+        nilai_x.append(x2)
+
+        # Kondisi berhenti
+        if abs(f2) < tol:
+            end = pc()
+            print(f"\nAkar ditemukan pada x = {x2:.12f}")
+            print(f"Jumlah iterasi = {i+1}")
+            print(f"Waktu eksekusi = {(end - start):.6f} detik")
+            return x2, nilai_x
+
+        # Geser nilai untuk iterasi berikutnya
+        x0, x1 = x1, x2
+
+    print("\nMetode tidak konvergen dalam batas iterasi.")
+    return None, nilai_x
+
+print("\nMenyelesaikan Persamaan Non Linear x^3+x^2-3x-3 dengan Metode Secant")
+
+# Menjalankan metode dengan tebakan awal
+akar, nilai_x = secant(2, 3)
+
+# Membuat Grafik Secant
+plt.figure(figsize=(8,5))
+plt.plot(range(1, len(nilai_x)+1), nilai_x, '^-r')
+plt.title("Konvergensi Metode Secant")
+plt.xlabel("Iterasi")
+plt.ylabel("Nilai x (perkiraan akar)")
+plt.grid(True)
+plt.show()
