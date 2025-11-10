@@ -1,0 +1,100 @@
+import numpy as np
+
+# Soal 1:
+# x - y + z = 0
+# 3x + 2y - 2z = 5
+# x + 3y + 3z = 4
+
+def gauss_elimination(A, B):
+    A = A.astype(float)
+    B = B.astype(float)
+    n = len(A)
+
+    for i in range(n):
+        # Jika pivot 0 → tukar baris
+        if A[i, i] == 0:
+            for j in range(i + 1, n):
+                if A[j, i] != 0:
+                    A[[i, j]] = A[[j, i]]
+                    B[i], B[j] = B[j], B[i]
+                    break
+
+        # Eliminasi baris di bawah pivot
+        for k in range(i + 1, n):
+            faktor = A[k, i] / A[i, i]
+            A[k, i:] -= faktor * A[i, i:]
+            B[k] -= faktor * B[i]
+
+    # Substitusi balik
+    x = np.zeros(n)
+    for i in range(n - 1, -1, -1):
+        x[i] = (B[i] - np.dot(A[i, i + 1:], x[i + 1:])) / A[i, i]
+
+    return x
+
+
+# Data SPL 1
+A = np.array([[1, -1, 1],
+              [3, 2, -2],
+              [1, 3, 3]])
+
+B = np.array([0, 5, 4])
+
+hasil1 = gauss_elimination(A, B)
+
+print("=== Hasil nomor 1 ===")
+print("Solusi")
+print(f"x = {round(hasil1[0])}")
+print(f"y = {round(hasil1[1])}")
+print(f"z = {round(hasil1[2])}")
+
+
+
+import numpy as np
+
+# Soal 2:
+# 2x + y + z = 9
+# x + y + z = 6
+# 3x - y + 2z = 7
+
+def gauss_elimination(A, B):
+    A = A.astype(float)
+    B = B.astype(float)
+    n = len(A)
+
+    for i in range(n):
+        # Jika pivot 0, tukar baris
+        if A[i, i] == 0:
+            for j in range(i + 1, n):
+                if A[j, i] != 0:
+                    A[[i, j]] = A[[j, i]]
+                    B[i], B[j] = B[j], B[i]
+                    break
+
+        # Eliminasi baris di bawah pivot
+        for k in range(i + 1, n):
+            faktor = A[k, i] / A[i, i]
+            A[k, i:] -= faktor * A[i, i:]
+            B[k] -= faktor * B[i]
+
+    # Substitusi balik
+    x = np.zeros(n)
+    for i in range(n - 1, -1, -1):
+        x[i] = (B[i] - np.dot(A[i, i + 1:], x[i + 1:])) / A[i, i]
+
+    return x
+
+A2 = np.array([[2, 1, 1],
+               [1, 1, 1],
+               [3, -1, 2]])
+
+B2 = np.array([9, 6, 7])
+
+hasil2 = gauss_elimination(A2, B2)
+
+print("=== Hasil nomor 2 ===")
+print(f"x = {hasil2[0]:.2f}")
+print(f"y = {hasil2[1]:.2f}")
+print(f"z = {hasil2[2]:.2f}")
+
+
